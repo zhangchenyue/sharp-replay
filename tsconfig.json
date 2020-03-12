@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "importHelpers": true,
+    "lib": ["es2018", "esnext"],
+    "resolveJsonModule": true,
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "target": "es2015",
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "moduleResolution": "node",
+    "noFallthroughCasesInSwitch": true,
+    "sourceMap": true,
+    "outDir": "./dist",
+    "baseUrl": ".",
+    "paths": {
+      "*": ["node_modules/*"]
+    },
+    "typeRoots": ["node_modules/@type", "typings"]
+  },
+  "include": ["**/*"],
+  "exclude": ["node_modules", "dist"]
+}
