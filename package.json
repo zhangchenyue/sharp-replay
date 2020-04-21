@@ -14,7 +14,9 @@
     "start": "node dist/startup.js",
     "dev": "ts-node --files startup.ts",
     "lint": "tslint -c tslint.json -p tsconfig.json --fix",
-    "pub": "npm run build:prod && node prepub && cd dist && npm publish",
+    "changelog": "standard-version --release-as patch --no-verify -t v-",
+    "release": "git fetch origin dev && git checkout master && git merge dev && npm run changelog && git push --follow-tags origin master",
+    "pub": "npm run release && npm run build:prod && node prepub && cd dist && npm publish",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
@@ -89,6 +91,7 @@
     "cz-conventional-changelog": "^3.1.0",
     "husky": "^4.2.3",
     "rimraf": "^3.0.2",
+    "standard-version": "^7.1.0",
     "ts-node": "^8.6.2",
     "tslint": "^6.1.1",
     "typescript": "^3.8.3"
