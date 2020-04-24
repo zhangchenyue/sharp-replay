@@ -9,8 +9,8 @@ import logUpdate from 'log-update';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
-import { getFileLines, sleep } from '../common';
-import { buildChannelMetaMsg, buildChannelDataMsg } from '../core/prism-msg';
+import { getFileLines, sleep, getRandomInt } from '../common';
+import { buildChannelMetaMsg, buildChannelDataMsg, buildChannelDataChangeMsg } from '../core/prism-msg';
 import { DeviceProvider } from '../providers/device.provider';
 
 dayjs.extend(utc);
@@ -97,8 +97,26 @@ export async function streamingByCsvFileAsync(
         console.log('\n', chalk.bgCyan('Start streaming'));
       }
     } else {
+      if ((lineNum - 2) % 30 === 0) {
+        console.log('Recomputing ...');
+        const num = await autoRecomputeAsync(
+          deviceProvider,
+          wellId,
+          jobId,
+          sessionId,
+          filePath,
+          round,
+          totalDataRowCount,
+          lineNum,
+          startTime
+        );
+        console.log(num, ' end recompute\n');
+        console.log('continue realtime');
+      }
+
       const resChannel = await deviceProvider.sendChannelDataRowAsync({ wellId, jobId, rowData, startTime });
       await sleep(interval);
+
       if (deviceProvider.getCurrentSession()) {
         const loadingIcon = chalk.gray.dim(spinner.frame());
         const output = `${loadingIcon}${chalk.cyan('Round: ')}${chalk.yellow(round)}${chalk.cyan(
@@ -118,14 +136,60 @@ export async function streamingByCsvFileAsync(
   await deviceProvider.deleteDeviceAsync();
 }
 
-export async function recomputeAsync(filePath: string) {
+export async function autoRecomputeAsync(
+  deviceProvider: DeviceProvider,
+  wellId: string,
+  jobId: string,
+  sessionId: string,
+  filePath: string,
+  round: number,
+  dataCount: number,
+  lineNum: number,
+  startTime: number,
+  option: any = { recomputeChannelNames: ['WT_WH_Whp', 'WT_WH_Wht'] }
+) {
+  const dataStart = startTime - ((round - 1) * dataCount + lineNum) * 1000;
+  const totalRoundItems = round === 1 ? lineNum : dataCount;
+  const splitCount = 5;
+  const chunkItemsCount = Math.floor(totalRoundItems / splitCount);
+  const randomRound = round === 1 ? 1 : getRandomInt(1, round - 1);
+  const randomChunk = getRandomInt(1, splitCount - 1);
+  const randomRoundStart = dataStart + (randomRound - 1) * dataCount * 1000;
+  const recomputeStart = randomRoundStart + (randomChunk - 1) * chunkItemsCount * 1000;
+  const recomputeEnd = recomputeStart + 1000 * (chunkItemsCount - 1);
+  const recomputeDataStartIndex = (randomChunk - 1) * chunkItemsCount;
+  const recomputeDataEndIndex = recomputeDataStartIndex + chunkItemsCount - 1;
+  console.log(new Date(recomputeStart), new Date(recomputeEnd));
   const fileStream = fs.createReadStream(filePath);
   const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
-  let lineNum = 0;
-  const lu = require('log-update');
+  let lineNum2 = 0;
+  const recomputeLines: Array<any> = [];
+  let totalChannels: Array<string> = [];
+
   for await (const line of rl) {
-    await sleep(1000);
-    lu(lineNum + '');
-    lineNum++;
+    if (lineNum2 === 0) {
+      totalChannels = line.split(',');
+    }
+    const idx = lineNum2 - 2;
+    if (idx >= recomputeDataStartIndex && idx <= recomputeDataEndIndex) {
+      recomputeLines.push(line);
+    }
+    lineNum2++;
   }
+  const recomputeChannels = option.recomputeChannelNames.map((name: string) => {
+    const channelId = totalChannels.indexOf(name);
+    const channelValues = recomputeLines.map((l) => l.split(',')[channelId]);
+    return { wellId, jobId, sessionId, channelId, channelValues, startTime: recomputeStart, endTime: recomputeEnd };
+  });
+
+  recomputeChannels.forEach(async (it: any) => {
+    it.channelValues = [];
+    const channelDataBuf: Buffer = buildChannelDataChangeMsg({ ...it });
+    const messageId = uuidv4();
+    console.log('channelDataChange messageId: ', messageId, it);
+    await deviceProvider.sendPrismMessageAsync({ messageId, data: channelDataBuf });
+  });
+
+  await sleep(10);
+  return lineNum2;
 }

@@ -8,6 +8,7 @@ import {
   CHANNEL_DATA,
   ETP_MSG_SESSION,
   ETP_MSG_CLOSE_SESSION,
+  CHANNEL_DATA_CHANGE,
 } from '../avro-schema';
 
 enum ChannelIndexTypes {
@@ -150,6 +151,60 @@ export function buildChannelDataMsg(data: any = {}): Buffer {
     }
   });
   const channelDataBuffer = avro.parse(CHANNEL_DATA).toBuffer({ data: channels });
+  return Buffer.concat([prismHeaderBuffer, etpHeaderBuffer, channelDataBuffer]);
+}
+
+export function buildChannelDataChangeMsg(data: any = {}): Buffer {
+  const { jobId, channelId, sessionId, channelValues, startTime, endTime } = data;
+
+  const prismHeaderBuffer = buildPrismHeaderBuffer({
+    sessionId,
+    containerId: jobId,
+    contentType: 'application/x-etp;version=1.0;type=ChannelDataChange',
+  });
+  const etpHeaderBuffer = buildEtpMessageHeaderBuffer({ messageType: 6 });
+  const channelData: Array<any> = [];
+  channelValues.forEach((item: any, idx: number) => {
+    const dataItem: any = {
+      channelId,
+      indexes: [
+        {
+          item: {
+            'Energistics.Datatypes.DateTime': {
+              time: startTime + idx * 1000,
+              offset: 0.0,
+            },
+          },
+        },
+      ],
+      value: {
+        item: { double: parseFloat(item) },
+      },
+      valueAttributes: [],
+    };
+
+    channelData.push(dataItem);
+  });
+  const channelDataBuffer = avro.parse(CHANNEL_DATA_CHANGE).toBuffer({
+    channelId: 0,
+    startIndex: {
+      item: {
+        'Energistics.Datatypes.DateTime': {
+          time: startTime,
+          offset: 0.0,
+        },
+      },
+    },
+    endIndex: {
+      item: {
+        'Energistics.Datatypes.DateTime': {
+          time: endTime,
+          offset: 0.0,
+        },
+      },
+    },
+    data: channelData,
+  });
   return Buffer.concat([prismHeaderBuffer, etpHeaderBuffer, channelDataBuffer]);
 }
 
