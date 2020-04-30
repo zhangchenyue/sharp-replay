@@ -1,8 +1,41 @@
-export const CHANNEL_DATA: any = {
+export const CHANNEL_DATA_CHANGE: any = {
   type: 'record',
-  name: 'ChannelData',
+  name: 'ChannelDataChange',
   namespace: 'Energistics.Protocol.ChannelStreaming',
   fields: [
+    { name: 'channelId', type: 'long' },
+    {
+      name: 'startIndex',
+      type: {
+        type: 'record',
+        name: 'IndexValue',
+        namespace: 'Energistics.Datatypes.ChannelData',
+        fields: [
+          {
+            name: 'item',
+            type: [
+              {
+                type: 'record',
+                name: 'DateTime',
+                namespace: 'Energistics.Datatypes',
+                aliases: ['etp.dt'],
+                fields: [
+                  { name: 'time', type: 'long' },
+                  { name: 'offset', type: 'float' },
+                ],
+                fullName: 'Energistics.Datatypes.DateTime',
+                depends: [],
+              },
+              'double',
+              'long',
+            ],
+          },
+        ],
+        fullName: 'Energistics.Datatypes.ChannelData.IndexValue',
+        depends: ['Energistics.Datatypes.DateTime'],
+      },
+    },
+    { name: 'endIndex', type: 'Energistics.Datatypes.ChannelData.IndexValue' },
     {
       name: 'data',
       type: {
@@ -12,40 +45,7 @@ export const CHANNEL_DATA: any = {
           name: 'DataItem',
           namespace: 'Energistics.Datatypes.ChannelData',
           fields: [
-            {
-              name: 'indexes',
-              type: {
-                type: 'array',
-                items: {
-                  type: 'record',
-                  name: 'IndexValue',
-                  namespace: 'Energistics.Datatypes.ChannelData',
-                  fields: [
-                    {
-                      name: 'item',
-                      type: [
-                        {
-                          type: 'record',
-                          name: 'DateTime',
-                          namespace: 'Energistics.Datatypes',
-                          aliases: ['etp.dt'],
-                          fields: [
-                            { name: 'time', type: 'long' },
-                            { name: 'offset', type: 'float' },
-                          ],
-                          fullName: 'Energistics.Datatypes.DateTime',
-                          depends: [],
-                        },
-                        'double',
-                        'long',
-                      ],
-                    },
-                  ],
-                  fullName: 'Energistics.Datatypes.ChannelData.IndexValue',
-                  depends: ['Energistics.Datatypes.DateTime'],
-                },
-              },
-            },
+            { name: 'indexes', type: { type: 'array', items: 'IndexValue' } },
             { name: 'channelId', type: 'long' },
             {
               name: 'value',
@@ -108,9 +108,13 @@ export const CHANNEL_DATA: any = {
       },
     },
   ],
-  messageType: '3',
+  messageType: '6',
   senderRole: 'producer',
   protocolRoles: 'producer,consumer',
-  fullName: 'Energistics.Protocol.ChannelStreaming.ChannelData',
-  depends: ['Energistics.Datatypes.ChannelData.DataItem'],
+  fullName: 'Energistics.Protocol.ChannelStreaming.ChannelDataChange',
+  depends: [
+    'Energistics.Datatypes.ChannelData.IndexValue',
+    'Energistics.Datatypes.ChannelData.IndexValue',
+    'Energistics.Datatypes.ChannelData.DataItem',
+  ],
 };

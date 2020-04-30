@@ -5,7 +5,7 @@ import logger from '../common/logger';
 import consul from '../core/consul';
 import keyvault from '../core/keyvault';
 
-const TOKEN_TTL: number = 60 * 60; // seconds
+const TOKEN_TTL: number = 30 * 60; // seconds
 const memoryCache = new NodeCache();
 const TOKEN_CACHE_KEY = '_svctoken';
 

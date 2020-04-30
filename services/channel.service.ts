@@ -9,8 +9,8 @@ import logUpdate from 'log-update';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
 
-import { getFileLines, sleep } from '../common';
-import { buildChannelMetaMsg, buildChannelDataMsg } from '../core/prism-msg';
+import { getFileLines, sleep, getRandomInt } from '../common';
+import { buildChannelMetaMsg, buildChannelDataMsg, buildChannelDataChangeMsg } from '../core/prism-msg';
 import { DeviceProvider } from '../providers/device.provider';
 
 dayjs.extend(utc);
@@ -97,8 +97,26 @@ export async function streamingByCsvFileAsync(
         console.log('\n', chalk.bgCyan('Start streaming'));
       }
     } else {
+      if (lineNum > 2 && (lineNum - 2) % 60 === 0) {
+        console.log(chalk.bgCyan('Recomputing ...'));
+        const num = await autoRecomputeAsync(
+          deviceProvider,
+          wellId,
+          jobId,
+          sessionId,
+          filePath,
+          round,
+          totalDataRowCount,
+          lineNum,
+          startTime
+        );
+        console.log(chalk.bgCyan(`End recompute, total recompute ${num} channels\n`));
+        console.log('continue realtime');
+      }
+
       const resChannel = await deviceProvider.sendChannelDataRowAsync({ wellId, jobId, rowData, startTime });
       await sleep(interval);
+
       if (deviceProvider.getCurrentSession()) {
         const loadingIcon = chalk.gray.dim(spinner.frame());
         const output = `${loadingIcon}${chalk.cyan('Round: ')}${chalk.yellow(round)}${chalk.cyan(
@@ -118,14 +136,98 @@ export async function streamingByCsvFileAsync(
   await deviceProvider.deleteDeviceAsync();
 }
 
-export async function recomputeAsync(filePath: string) {
+export async function autoRecomputeAsync(
+  deviceProvider: DeviceProvider,
+  wellId: string,
+  jobId: string,
+  sessionId: string,
+  filePath: string,
+  round: number,
+  dataCount: number,
+  lineNum: number,
+  startTime: number
+) {
+  const dataStart = startTime - ((round - 1) * dataCount + lineNum) * 1000;
+  const totalRoundItems = round === 1 ? lineNum : dataCount;
+  const splitCount = 3;
+  const chunkItemsCount = Math.floor(totalRoundItems / splitCount);
+  const randomRound = round === 1 ? 1 : getRandomInt(1, round - 1);
+  const randomChunk = getRandomInt(1, splitCount - 1);
+  const randomRoundStart = dataStart + (randomRound - 1) * dataCount * 1000;
+  const recomputeStart = randomRoundStart + (randomChunk - 1) * chunkItemsCount * 1000;
+  const recomputeEnd = recomputeStart + 1000 * (chunkItemsCount - 1);
+  const recomputeDataStartIndex = (randomChunk - 1) * chunkItemsCount;
+  const recomputeDataEndIndex = recomputeDataStartIndex + chunkItemsCount - 1;
+  console.log('Range:', new Date(recomputeStart), ' -- ', new Date(recomputeEnd));
   const fileStream = fs.createReadStream(filePath);
   const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
-  let lineNum = 0;
-  const lu = require('log-update');
+  let lineNum2 = 0;
+  const recomputeLines: Array<any> = [];
+  let totalChannels: Array<string> = [];
+
+  const recomputeChannelMnemonic = getComputedChannels().map((ch: any) => ch.Mnemonic);
+
   for await (const line of rl) {
-    await sleep(1000);
-    lu(lineNum + '');
-    lineNum++;
+    if (lineNum2 === 0) {
+      totalChannels = line.split(',');
+    }
+    const idx = lineNum2 - 2;
+    if (idx >= recomputeDataStartIndex && idx <= recomputeDataEndIndex) {
+      recomputeLines.push(line);
+    }
+    lineNum2++;
   }
+  const recomputeChannels = recomputeChannelMnemonic
+    .filter((mnemonic) => totalChannels.includes(mnemonic))
+    .map((name: string) => {
+      const channelId = totalChannels.indexOf(name);
+      const channelValues = recomputeLines.map((l) => l.split(',')[channelId]);
+      return { wellId, jobId, sessionId, channelId, channelValues, startTime: recomputeStart, endTime: recomputeEnd };
+    });
+
+  const eraseChannelsMessages = recomputeChannels.map((values: any) => {
+    const d = {
+      ...values,
+      channelValues: [],
+    };
+    const channelDataBuf: Buffer = buildChannelDataChangeMsg({ ...d });
+    const messageId = uuidv4();
+    return deviceProvider.sendPrismMessageAsync({ messageId, data: channelDataBuf });
+  });
+
+  for await (const e of eraseChannelsMessages) {
+  }
+
+  await sleep(15000);
+
+  const recomputeChannelsMessages = recomputeChannels.map((values: any) => {
+    const channelDataBuf: Buffer = buildChannelDataChangeMsg({ ...values });
+    const messageId = uuidv4();
+    return deviceProvider.sendPrismMessageAsync({ messageId, data: channelDataBuf });
+  });
+  for await (const c of recomputeChannelsMessages) {
+  }
+
+  return recomputeChannels.length;
+}
+
+export function getComputedChannels(jobSetupPath: string = '') {
+  if (!jobSetupPath) {
+    jobSetupPath = path.join(__dirname, '../config/job.json');
+  }
+  const jobSetup = require(jobSetupPath);
+  const computeChannels: Array<string> = [];
+  jobSetup.EquipmentList.forEach((equipment: any) => {
+    const queue: Array<any> = [equipment];
+    while (queue.length) {
+      const { Channels = [], Parts = [] } = queue.shift();
+      Channels.forEach((channel: any) => {
+        if (channel.ChannelType === 1) {
+          computeChannels.push(channel);
+        }
+      });
+      queue.push(...Parts);
+    }
+  });
+  return computeChannels;
 }
