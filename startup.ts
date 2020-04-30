@@ -119,8 +119,8 @@ const startup = async () => {
       .option('-p, --path <filepath>', 'Specify the channel data csv file path')
       .option('-w, --well <wellId>', 'Specify the well id to send')
       .option('-j, --job <jobId>', 'Specify the job id')
-      .option('-i, --interval', 'Set channel time index interval, default: 1 second')
-      .option('-r, --rows', 'Set row count per sending message, default: 1')
+      //  .option('-i, --interval', 'Set channel time index interval, default: 1 second')
+      //  .option('-r, --rows', 'Set row count per sending message, default: 1')
       .option('-d, --delete <wellId>', 'Delete a well by id')
       .option('-c, --clean <wellName>', 'Clean wells by keykwords of well name, e.g "NodeJ" ')
       .parse(process.argv);
