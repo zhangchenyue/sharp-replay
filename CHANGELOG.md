@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.27](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.26...v-0.0.27) (2020-04-30)
+
+
+### Features
+
+* **app:** add recompute schema and functions ([7e23585](https://github.com/zhangchenyue/sharp-replay/commit/7e23585251097400603330180fbac836a314b47a))
+* **recompute:** add auto recompute feature ([118592a](https://github.com/zhangchenyue/sharp-replay/commit/118592a6644ba3f5e75ce9452c5681a971a40220))
+
 ### [0.0.26](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.25...v-0.0.26) (2020-04-21)
 
 ### 0.0.25 (2020-04-21)
