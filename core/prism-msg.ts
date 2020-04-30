@@ -165,28 +165,30 @@ export function buildChannelDataChangeMsg(data: any = {}): Buffer {
   const etpHeaderBuffer = buildEtpMessageHeaderBuffer({ messageType: 6 });
   const channelData: Array<any> = [];
   channelValues.forEach((item: any, idx: number) => {
-    const dataItem: any = {
-      channelId,
-      indexes: [
-        {
-          item: {
-            'Energistics.Datatypes.DateTime': {
-              time: startTime + idx * 1000,
-              offset: 0.0,
+    if (item !== '#N/A') {
+      const dataItem: any = {
+        channelId,
+        indexes: [
+          {
+            item: {
+              'Energistics.Datatypes.DateTime': {
+                time: startTime + idx * 1000,
+                offset: 0.0,
+              },
             },
           },
+        ],
+        value: {
+          item: { double: parseFloat(item) },
         },
-      ],
-      value: {
-        item: { double: parseFloat(item) },
-      },
-      valueAttributes: [],
-    };
+        valueAttributes: [],
+      };
 
-    channelData.push(dataItem);
+      channelData.push(dataItem);
+    }
   });
   const channelDataBuffer = avro.parse(CHANNEL_DATA_CHANGE).toBuffer({
-    channelId: 0,
+    channelId,
     startIndex: {
       item: {
         'Energistics.Datatypes.DateTime': {

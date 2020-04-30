@@ -97,8 +97,8 @@ export async function streamingByCsvFileAsync(
         console.log('\n', chalk.bgCyan('Start streaming'));
       }
     } else {
-      if ((lineNum - 2) % 30 === 0) {
-        console.log('Recomputing ...');
+      if (lineNum > 2 && (lineNum - 2) % 60 === 0) {
+        console.log(chalk.bgCyan('Recomputing ...'));
         const num = await autoRecomputeAsync(
           deviceProvider,
           wellId,
@@ -110,7 +110,7 @@ export async function streamingByCsvFileAsync(
           lineNum,
           startTime
         );
-        console.log(num, ' end recompute\n');
+        console.log(chalk.bgCyan(`End recompute, total recompute ${num} channels\n`));
         console.log('continue realtime');
       }
 
@@ -145,12 +145,11 @@ export async function autoRecomputeAsync(
   round: number,
   dataCount: number,
   lineNum: number,
-  startTime: number,
-  option: any = { recomputeChannelNames: ['WT_WH_Whp', 'WT_WH_Wht'] }
+  startTime: number
 ) {
   const dataStart = startTime - ((round - 1) * dataCount + lineNum) * 1000;
   const totalRoundItems = round === 1 ? lineNum : dataCount;
-  const splitCount = 5;
+  const splitCount = 3;
   const chunkItemsCount = Math.floor(totalRoundItems / splitCount);
   const randomRound = round === 1 ? 1 : getRandomInt(1, round - 1);
   const randomChunk = getRandomInt(1, splitCount - 1);
@@ -159,12 +158,14 @@ export async function autoRecomputeAsync(
   const recomputeEnd = recomputeStart + 1000 * (chunkItemsCount - 1);
   const recomputeDataStartIndex = (randomChunk - 1) * chunkItemsCount;
   const recomputeDataEndIndex = recomputeDataStartIndex + chunkItemsCount - 1;
-  console.log(new Date(recomputeStart), new Date(recomputeEnd));
+  console.log('Range:', new Date(recomputeStart), ' -- ', new Date(recomputeEnd));
   const fileStream = fs.createReadStream(filePath);
   const rl = readline.createInterface({ input: fileStream, crlfDelay: Infinity });
   let lineNum2 = 0;
   const recomputeLines: Array<any> = [];
   let totalChannels: Array<string> = [];
+
+  const recomputeChannelMnemonic = getComputedChannels().map((ch: any) => ch.Mnemonic);
 
   for await (const line of rl) {
     if (lineNum2 === 0) {
@@ -176,20 +177,57 @@ export async function autoRecomputeAsync(
     }
     lineNum2++;
   }
-  const recomputeChannels = option.recomputeChannelNames.map((name: string) => {
-    const channelId = totalChannels.indexOf(name);
-    const channelValues = recomputeLines.map((l) => l.split(',')[channelId]);
-    return { wellId, jobId, sessionId, channelId, channelValues, startTime: recomputeStart, endTime: recomputeEnd };
-  });
+  const recomputeChannels = recomputeChannelMnemonic
+    .filter((mnemonic) => totalChannels.includes(mnemonic))
+    .map((name: string) => {
+      const channelId = totalChannels.indexOf(name);
+      const channelValues = recomputeLines.map((l) => l.split(',')[channelId]);
+      return { wellId, jobId, sessionId, channelId, channelValues, startTime: recomputeStart, endTime: recomputeEnd };
+    });
 
-  recomputeChannels.forEach(async (it: any) => {
-    it.channelValues = [];
-    const channelDataBuf: Buffer = buildChannelDataChangeMsg({ ...it });
+  const eraseChannelsMessages = recomputeChannels.map((values: any) => {
+    const d = {
+      ...values,
+      channelValues: [],
+    };
+    const channelDataBuf: Buffer = buildChannelDataChangeMsg({ ...d });
     const messageId = uuidv4();
-    console.log('channelDataChange messageId: ', messageId, it);
-    await deviceProvider.sendPrismMessageAsync({ messageId, data: channelDataBuf });
+    return deviceProvider.sendPrismMessageAsync({ messageId, data: channelDataBuf });
   });
 
-  await sleep(10);
-  return lineNum2;
+  for await (const e of eraseChannelsMessages) {
+  }
+
+  await sleep(15000);
+
+  const recomputeChannelsMessages = recomputeChannels.map((values: any) => {
+    const channelDataBuf: Buffer = buildChannelDataChangeMsg({ ...values });
+    const messageId = uuidv4();
+    return deviceProvider.sendPrismMessageAsync({ messageId, data: channelDataBuf });
+  });
+  for await (const c of recomputeChannelsMessages) {
+  }
+
+  return recomputeChannels.length;
+}
+
+export function getComputedChannels(jobSetupPath: string = '') {
+  if (!jobSetupPath) {
+    jobSetupPath = path.join(__dirname, '../config/job.json');
+  }
+  const jobSetup = require(jobSetupPath);
+  const computeChannels: Array<string> = [];
+  jobSetup.EquipmentList.forEach((equipment: any) => {
+    const queue: Array<any> = [equipment];
+    while (queue.length) {
+      const { Channels = [], Parts = [] } = queue.shift();
+      Channels.forEach((channel: any) => {
+        if (channel.ChannelType === 1) {
+          computeChannels.push(channel);
+        }
+      });
+      queue.push(...Parts);
+    }
+  });
+  return computeChannels;
 }
