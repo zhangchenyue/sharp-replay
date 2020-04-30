@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.28](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.27...v-0.0.28) (2020-04-30)
+
+
+### Features
+
+* **app:** add readme resource ([197bf3d](https://github.com/zhangchenyue/sharp-replay/commit/197bf3d1dc0e2b0ea19559bd6cee13b0fb277ac0))
+
 ### [0.0.27](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.26...v-0.0.27) (2020-04-30)
 
 
