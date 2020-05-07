@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.29](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.28...v-0.0.29) (2020-05-07)
+
+
+### Features
+
+* **app:** add no recompution option ([84bee08](https://github.com/zhangchenyue/sharp-replay/commit/84bee086e085c19b70c9096803d66cb0abe43d67))
+* **app:** add script for gif copy ([404ef6f](https://github.com/zhangchenyue/sharp-replay/commit/404ef6f594aecc366599d3a1f0ed2d5f976a1e6d))
+* **doc:** add non recompute doc ([7607d7a](https://github.com/zhangchenyue/sharp-replay/commit/7607d7a17543c28d50cc38cb6a068d6830b295a8))
+
 ### [0.0.28](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.27...v-0.0.28) (2020-04-30)
 
 
