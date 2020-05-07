@@ -74,6 +74,8 @@ const init = async (wid?: string, jId?: string) => {
 
 const main = async () => {
   const dataFilePath = typeof commander.path === 'string' ? commander.path : defaultDataSource;
+  const doRecompute = commander.recompute;
+
   let { well, job } = commander;
   if (!well || !job) {
     const { wellId, jobId } = await init(well, job);
@@ -83,7 +85,7 @@ const main = async () => {
   const device = new DeviceProvider();
   await device.registerDeviceAsync(well);
   curDevice = device;
-  await streamingByCsvFileAsync(device, well, job, '', dataFilePath);
+  await streamingByCsvFileAsync(device, well, job, '', dataFilePath, doRecompute);
 };
 
 let curDevice: DeviceProvider = null;
@@ -120,7 +122,7 @@ const startup = async () => {
       .option('-w, --well <wellId>', 'Specify the well id to send')
       .option('-j, --job <jobId>', 'Specify the job id')
       //  .option('-i, --interval', 'Set channel time index interval, default: 1 second')
-      //  .option('-r, --rows', 'Set row count per sending message, default: 1')
+      .option('-nr, --no-recompute', 'Disable recompute')
       .option('-d, --delete <wellId>', 'Delete a well by id')
       .option('-c, --clean <wellName>', 'Clean wells by keykwords of well name, e.g "NodeJ" ')
       .parse(process.argv);
@@ -151,7 +153,12 @@ const startup = async () => {
     console.log(chalk.yellowBright(figlet.textSync('sharp-replay', { horizontalLayout: 'full' })));
     commander.outputHelp();
 
-    logger.info(`Replay tool starting`);
+    if (commander.recompute) {
+      logger.info(`Replay tool starting with auto-recomputation`);
+    } else {
+      logger.info(`Replay tool starting`);
+    }
+
     console.log('\n', chalk.bgCyan(`Replay tool starting`));
     await main();
   } catch (error) {

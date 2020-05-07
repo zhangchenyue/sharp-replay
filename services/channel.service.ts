@@ -59,6 +59,7 @@ export async function streamingByCsvFileAsync(
   jobId: string,
   logId: string,
   filePath: string,
+  doRecompute: boolean = true,
   interval: number = 1000,
   round: number = 1
 ) {
@@ -97,7 +98,7 @@ export async function streamingByCsvFileAsync(
         console.log('\n', chalk.bgCyan('Start streaming'));
       }
     } else {
-      if (lineNum > 2 && (lineNum - 2) % 60 === 0) {
+      if (doRecompute && lineNum > 2 && (lineNum - 2) % 60 === 0) {
         console.log(chalk.bgCyan('Recomputing ...'));
         const num = await autoRecomputeAsync(
           deviceProvider,
@@ -130,7 +131,7 @@ export async function streamingByCsvFileAsync(
     startTime += 1000;
     lineNum++;
   }
-  await streamingByCsvFileAsync(deviceProvider, wellId, jobId, logId, filePath, interval, ++round);
+  await streamingByCsvFileAsync(deviceProvider, wellId, jobId, logId, filePath, doRecompute, interval, ++round);
   console.log(logSymbols.success, 'send all data complete');
   await deviceProvider.closeEtpSessionAsync();
   await deviceProvider.deleteDeviceAsync();

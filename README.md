@@ -44,6 +44,7 @@ Options:
 - -w, --well \<wellId> (Specify the well id to send)
 - -j, --job \<jobId> (Specify the job id)
 - -d, --delete \<wellId> (Delete a well by id)
+- -nr, --no-recompute (Send data without recomputation)
 - -c, --clean \<wellName> (Clean wells by keykwords of well name, e.g "NodeJ")
 - -h, --help (display help for command)
 
