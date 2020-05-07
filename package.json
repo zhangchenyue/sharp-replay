@@ -10,7 +10,7 @@
     "check": "tslint -c tslint.json -p tsconfig.json --fix",
     "build": "rimraf dist/ && npm run check && tsc -p tsconfig.json && npm run copy",
     "build:prod": "rimraf dist/ && npm run check && tsc -p tsconfig-prod.json  && npm run copy",
-    "copy": "cpy config/*.*  dist/config && cpy *.md dist/ && cpy LICENSE dist/",
+    "copy": "cpy config/*.*  dist/config && cpy *.md dist/ && cpy LICENSE dist/ && cpy *.gif dist/",
     "start": "node dist/startup.js",
     "dev": "ts-node --files startup.ts",
     "lint": "tslint -c tslint.json -p tsconfig.json --fix",
