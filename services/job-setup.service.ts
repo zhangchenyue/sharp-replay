@@ -13,7 +13,13 @@ const eventBlobKey = 'event-blob-reference';
 export async function createJobSetupAsync(wellId: string): Promise<any> {
   const jobId = uuidv4();
   const jobName = `W-Test-NodeJ_${new Date(Date.now()).toISOString()}`;
-  jobSetupJson = jobSetupJson.replace(/{jobId}/g, jobId).replace(/{jobName}/g, jobName);
+  const timeZoneId = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  const timeZoneOffset = /GMT(.*)\s?\(/.exec(new Date().toString())[1].trim();
+  jobSetupJson = jobSetupJson
+    .replace(/{jobId}/g, jobId)
+    .replace(/{jobName}/g, jobName)
+    .replace(/{rigTimeZoneId}/g, timeZoneId)
+    .replace(/{rigTimeZoneOffSet}/g, timeZoneOffset);
   const msgBuf: Buffer = buildJobSetupMsg({
     messageId: uuidv4(),
     sessionId: uuidv4(),
@@ -34,5 +40,5 @@ export async function createJobSetupAsync(wellId: string): Promise<any> {
     Version: '1.0',
     data: [],
   });
-  return { msgId, wellId, jobId, jobName, eventBlobKey: blobName };
+  return { msgId, wellId, jobId, jobName, timeZoneId, timeZoneOffset, eventBlobKey: blobName };
 }

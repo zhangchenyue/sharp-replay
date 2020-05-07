@@ -69,6 +69,8 @@ const init = async (wid?: string, jId?: string) => {
   return {
     wellId: wid,
     jobId: resp.jobId,
+    timeZoneId: resp.timeZoneId,
+    timeZoneOffset: resp.timeZoneOffset,
   };
 };
 
@@ -76,16 +78,20 @@ const main = async () => {
   const dataFilePath = typeof commander.path === 'string' ? commander.path : defaultDataSource;
   const doRecompute = commander.recompute;
 
+  let rigTimeZoneId = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  let rigTimeZoneOffset = /GMT(.*)\s?\(/.exec(new Date().toString())[1].trim();
   let { well, job } = commander;
   if (!well || !job) {
-    const { wellId, jobId } = await init(well, job);
+    const { wellId, jobId, timeZoneId, timeZoneOffset } = await init(well, job);
     well = wellId;
     job = jobId;
+    rigTimeZoneId = timeZoneId;
+    rigTimeZoneOffset = timeZoneOffset;
   }
   const device = new DeviceProvider();
   await device.registerDeviceAsync(well);
   curDevice = device;
-  await streamingByCsvFileAsync(device, well, job, '', dataFilePath, doRecompute);
+  await streamingByCsvFileAsync(device, well, job, '', rigTimeZoneId, rigTimeZoneOffset, dataFilePath, doRecompute);
 };
 
 let curDevice: DeviceProvider = null;

@@ -58,6 +58,8 @@ export async function streamingByCsvFileAsync(
   wellId: string,
   jobId: string,
   logId: string,
+  timeZoneId: string,
+  timeZoneOffset: string,
   filePath: string,
   doRecompute: boolean = true,
   interval: number = 1000,
@@ -91,6 +93,8 @@ export async function streamingByCsvFileAsync(
         console.log('\n', chalk.bgCyan(`Info`));
         console.log(logSymbols.info, 'WellId: ', chalk.cyanBright(wellId));
         console.log(logSymbols.info, 'JobId: ', chalk.cyanBright(jobId));
+        console.log(logSymbols.info, 'TimeZoneId: ', chalk.cyanBright(timeZoneId));
+        console.log(logSymbols.info, 'TimeZoneOffset: ', chalk.cyanBright(timeZoneOffset));
         console.log(logSymbols.info, 'SessionId: ', chalk.cyanBright(sessionId));
         console.log(logSymbols.info, 'Datafile:', chalk.cyanBright(`${path.resolve(filePath)}`));
         console.log(logSymbols.info, 'Index Interval:', chalk.cyanBright(`${interval / 1000} sec`));
@@ -131,7 +135,19 @@ export async function streamingByCsvFileAsync(
     startTime += 1000;
     lineNum++;
   }
-  await streamingByCsvFileAsync(deviceProvider, wellId, jobId, logId, filePath, doRecompute, interval, ++round);
+
+  await streamingByCsvFileAsync(
+    deviceProvider,
+    wellId,
+    jobId,
+    logId,
+    timeZoneId,
+    timeZoneOffset,
+    filePath,
+    doRecompute,
+    interval,
+    ++round
+  );
   console.log(logSymbols.success, 'send all data complete');
   await deviceProvider.closeEtpSessionAsync();
   await deviceProvider.deleteDeviceAsync();

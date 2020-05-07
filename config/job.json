@@ -31,7 +31,9 @@
       "CushionFluidType": null,
       "CushionFluidVolume": null,
       "TotalDepth": null,
-      "DepthReference": null
+      "DepthReference": null,
+      "RigTimeZoneId": "{rigTimeZoneId}",
+      "RigTimeZoneOffSet": "{rigTimeZoneOffSet}"
     },
     "ObjectVerion": "1.2"
   },
