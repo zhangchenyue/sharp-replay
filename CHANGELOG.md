@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.31](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.30...v-0.0.31) (2020-05-07)
+
+
+### Features
+
+* **app:** add timezone support for job ([735b818](https://github.com/zhangchenyue/sharp-replay/commit/735b8183d64afb32a88c643fa7775712caee6326))
+
 ### [0.0.30](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.29...v-0.0.30) (2020-05-07)
 
 
