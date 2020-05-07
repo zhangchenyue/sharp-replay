@@ -37,15 +37,15 @@ By default, the tool will run infinitly with auto-recompution every 1 min, the r
 
 > Auto create well and job, start streaming with recomputation (sprt)
 
-<p align="center"><img src="demo.gif?raw=true"/></p>
+<p align="center"><img src="https://media.giphy.com/media/QxMwUbZCsixaZeSzEz/giphy.gif"/></p>
 
 > Auto create well and job, start streaming without recomputation (sprt -nr)
 
-<p align="center"><img src="demo-norecompute.gif?raw=true"/></p>
+<p align="center"><img src="https://media.giphy.com/media/J3MYvgNjFAvsbhoVac/giphy.gif"/></p>
 
 > Delete wells by well name like '-NodeJ-'
 
-<p align="center"><img src="demo-delete.gif?raw=true"/></p>
+<p align="center"><img src="https://media.giphy.com/media/WrynX9bd7KYSdgkyd3/giphy.gif"/></p>
 
 **Parameters**
 
