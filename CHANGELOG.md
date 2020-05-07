@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.30](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.29...v-0.0.30) (2020-05-07)
+
+
+### Features
+
+* **app:** add gif link for ReadME ([48b6d30](https://github.com/zhangchenyue/sharp-replay/commit/48b6d302f11649300ddee73c36cc35196da71be4))
+
 ### [0.0.29](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.28...v-0.0.29) (2020-05-07)
 
 
