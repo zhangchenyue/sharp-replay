@@ -33,6 +33,20 @@ npm i -g sharp-replay --registry=http://163.184.146.22/
 sprt
 ```
 
+By default, the tool will run infinitly with auto-recompution every 1 min, the recompution range would be random.The data source file would loop send message, it would go from begining if the data item at the end.
+
+> Auto create well and job, start streaming with recomputation (sprt)
+
+<p align="center"><img src="demo.gif?raw=true"/></p>
+
+> Auto create well and job, start streaming without recomputation (sprt -nr)
+
+<p align="center"><img src="demo-norecompute.gif?raw=true"/></p>
+
+> Delete wells by well name like '-NodeJ-'
+
+<p align="center"><img src="demo-delete.gif?raw=true"/></p>
+
 **Parameters**
 
 #### Usage: sprt [options]
