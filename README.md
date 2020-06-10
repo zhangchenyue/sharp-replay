@@ -62,6 +62,22 @@ Options:
 - -c, --clean \<wellName> (Clean wells by keykwords of well name, e.g "NodeJ")
 - -h, --help (display help for command)
 
+#### How to switch environment
+
+Windows
+
+```bash
+set targetEnv=demohelios
+sprt
+```
+
+Linux
+
+```bash
+targetEnv=demohelios
+sprt
+```
+
 ## License
 
 MIT
