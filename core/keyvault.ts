@@ -6,7 +6,7 @@ import azureKVClient from './azure-kv';
 import consul from './consul';
 import { ENV } from '../common/constant';
 
-const env = process.env.env || ENV;
+const env = process.env.targetEnv || ENV;
 
 let uri: string;
 let clientId: string;
@@ -18,7 +18,7 @@ const initialize = async () => {
     [uri, clientId, clientSecret] = await Promise.all([
       consul('KeyVault-Uri'),
       consul('KeyVault-ClientId'),
-      consul('KeyVault-ClientSecret')
+      consul('KeyVault-ClientSecret'),
     ]);
     azureClient = azureKVClient({ uri, clientId, clientSecret });
     logger.info(`Initialized KeyVault, clientId="${clientId}" clientSecret="${clientSecret}"`);

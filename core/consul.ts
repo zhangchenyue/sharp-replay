@@ -5,7 +5,7 @@ import logger from '../common/logger';
 import singleton from '../common/singleton';
 import { CONSUL_URI, ENV } from '../common/constant';
 
-const env = process.env.env || ENV;
+const env = process.env.targetEnv || ENV;
 const consulUri = process.env.consulUri || CONSUL_URI;
 const retries = process.env.retries ? +process.env.retries : 3;
 const timeout = process.env.consulTimeout ? +process.env.consulTimeout : 5 * 1000;
@@ -16,7 +16,7 @@ export const initialize = async () => {
   axiosClient = axios.create({
     baseURL: consulUri,
     httpsAgent: new Agent({ rejectUnauthorized: false, keepAlive: true }),
-    timeout
+    timeout,
   });
   axiosRetry(axiosClient, { retries });
 
