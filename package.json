@@ -1,6 +1,6 @@
 {
   "name": "sharp-replay",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "replay tool nodejs version",
   "main": "./dist/startup.js",
   "bin": {

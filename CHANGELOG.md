@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.32](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.31...v-0.0.32) (2020-06-10)
+
+
+### Features
+
+* **app:** change env name for pm2 deploy ([91ceb3e](https://github.com/zhangchenyue/sharp-replay/commit/91ceb3e850a8d5bef0d645c8c4dfc55164faf602))
+
 ### [0.0.31](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.30...v-0.0.31) (2020-05-07)
 
 
