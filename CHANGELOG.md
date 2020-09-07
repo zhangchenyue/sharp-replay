@@ -2,6 +2,8 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.34](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.33...v-0.0.34) (2020-09-07)
+
 ### [0.0.33](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.32...v-0.0.33) (2020-09-07)
 
 
