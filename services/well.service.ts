@@ -13,7 +13,7 @@ export async function createWellAsync(id: string = '', name: string = '') {
   const wellId = id || uuidv4();
   const wellName = `${WELL_NAME_PREFIX}${name}-${wellId}`;
   const token = await getTokenAsync();
-  const wellURL = `${wellBaseURL}${wellId}?tenantId=${tenantId}`;
+  const wellURL = `${wellBaseURL}${wellId}?slb-data-partition-id=${tenantId}`;
 
   const { data } = await axios.post(
     `${wellURL}`,
@@ -35,7 +35,7 @@ export async function fetchWellByIdAsync(wellId: string) {
   const wellBaseURL = await consul('Uri-Slb.Prism.Core.Service.Well-2');
   const tenantId = await consul('Delfi-Test-Tenant-Id');
   const token = await getTokenAsync();
-  const wellURL = `${wellBaseURL}${wellId}?tenantId=${tenantId}`;
+  const wellURL = `${wellBaseURL}${wellId}?slb-data-partition-id=${tenantId}`;
 
   try {
     const { data } = await axios.get(`${wellURL}`, {
@@ -53,7 +53,7 @@ export async function deleteWellAsync(wellId: string = '') {
   const wellBaseURL = await consul('Uri-Slb.Prism.Core.Service.Well-2');
   const tenantId = await consul('Delfi-Test-Tenant-Id');
   const token = await getTokenAsync();
-  const wellURL = `${wellBaseURL}${wellId}?tenantId=${tenantId}`;
+  const wellURL = `${wellBaseURL}${wellId}?slb-data-partition-id=${tenantId}`;
   try {
     return await axios.delete(`${wellURL}`, {
       headers: {

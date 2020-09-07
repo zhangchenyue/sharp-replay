@@ -86,7 +86,7 @@ export function buildChannelMetaMsg(data: any = {}): Buffer {
       direction: IndexDirections.Increasing,
       mnemonic: { string: channels[0] },
       description: { string: '' },
-      uri: { string: `eml://PrismSimulator.slb.com/${wellId}/${jobId}/${logId}/` },
+      uri: { string: `eml://Helios/${wellId}/${jobId}/${logId}/` },
       customData: { item: { item: { string: '' } } },
     },
   ];
@@ -97,7 +97,7 @@ export function buildChannelMetaMsg(data: any = {}): Buffer {
     if (i === 0) channelDataType = 'float';
     if (channelName.includes('IMAGE')) channelDataType = 'Energistics.Datatypes.ArrayOfDouble';
     const channel: any = {
-      channelUri: `eml://PrismSimulator.slb.com/${wellId}/${jobId}/${logId}/${channelName}`,
+      channelUri: `eml://Helios/well(${wellId})/wellbore(${jobId})/channel(${channelName})/`,
       channelId: i,
       indexes,
       mnemonic: channelName,
