@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.33](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.32...v-0.0.33) (2020-09-07)
+
+
+### Features
+
+* **app:** modified repo address ([001807f](https://github.com/zhangchenyue/sharp-replay/commit/001807fbd3aa43ee18017c8ecfd00232e2fd70f2))
+
 ### [0.0.32](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.31...v-0.0.32) (2020-06-10)
 
 
