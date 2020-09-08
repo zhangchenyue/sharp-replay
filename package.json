@@ -1,6 +1,6 @@
 {
   "name": "sharp-replay",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "description": "replay tool nodejs version",
   "main": "./dist/startup.js",
   "bin": {
@@ -48,7 +48,7 @@
     ]
   },
   "publishConfig": {
-    "registry": "http://163.184.146.22/"
+    "registry": "http://163.184.146.22/repo"
   },
   "engines": {
     "node": ">=12.0.0"
