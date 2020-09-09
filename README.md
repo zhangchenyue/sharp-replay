@@ -24,7 +24,7 @@ sharp-replay is a kind of replay tool which is in pure Javascript. It could send
 
 ```bash
 # install pkg
-npm i -g sharp-replay --registry=http://163.184.146.22/
+npm i -g sharp-replay --registry=http://163.184.146.22/repo/
 ```
 
 **Run**
