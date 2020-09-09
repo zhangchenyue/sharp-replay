@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.40](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.39...v-0.0.40) (2020-09-09)
+
+
+### Features
+
+* **app:** modified well creation for tenantID ([0973eba](https://github.com/zhangchenyue/sharp-replay/commit/0973eba7e4aec311e6995dbee197e20d5435b8a9))
+
 ### [0.0.39](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.38...v-0.0.39) (2020-09-09)
 
 
