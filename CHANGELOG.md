@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.37](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.36...v-0.0.37) (2020-09-09)
+
+
+### Features
+
+* **app:** add prefix for npm publish ([747604f](https://github.com/zhangchenyue/sharp-replay/commit/747604f6e83c7c200bced9237eaae7fe9397f011))
+
 ### [0.0.36](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.35...v-0.0.36) (2020-09-09)
 
 ### [0.0.35](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.34...v-0.0.35) (2020-09-08)
