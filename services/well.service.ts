@@ -13,22 +13,26 @@ export async function createWellAsync(id: string = '', name: string = '') {
   const wellId = id || uuidv4();
   const wellName = `${WELL_NAME_PREFIX}${name}-${wellId}`;
   const token = await getTokenAsync();
-  const wellURL = `${wellBaseURL}${wellId}?slb-data-partition-id=${tenantId}`;
-
-  const { data } = await axios.post(
-    `${wellURL}`,
-    {
-      Name: wellName,
-      Company: 'Schlumberger Helios',
-      TimeZone: '-06:00',
-    },
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
+  const wellURL = `${wellBaseURL}${wellId}?tenantId=${tenantId}`;
+  try {
+    const { data } = await axios.post(
+      `${wellURL}`,
+      {
+        Name: wellName,
+        Company: 'Schlumberger Helios',
+        TimeZone: '-06:00',
       },
-    }
-  );
-  return { ...data, name: wellName };
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'slb-data-partition-id': tenantId,
+        },
+      }
+    );
+    return { ...data, name: wellName };
+  } catch (error) {
+    console.log(error);
+  }
 }
 
 export async function fetchWellByIdAsync(wellId: string) {
