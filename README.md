@@ -68,6 +68,7 @@ Windows
 
 ```bash
 set targetEnv=demohelios
+set consulUri=https://xxx.xxx.xxx/
 sprt
 ```
 
@@ -75,6 +76,7 @@ Linux
 
 ```bash
 targetEnv=demohelios
+consulUri=https://xxx.xxx.xxx/
 sprt
 ```
 
