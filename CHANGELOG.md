@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.42](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.41...v-0.0.42) (2021-01-27)
+
+
+### Features
+
+* **app:** modified delete api params ([550fe86](https://github.com/zhangchenyue/sharp-replay/commit/550fe860f318fe1e163f75f4afcd323427dcdc38))
+
 ### [0.0.41](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.40...v-0.0.41) (2020-11-16)
 
 ### [0.0.40](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.39...v-0.0.40) (2020-09-09)
