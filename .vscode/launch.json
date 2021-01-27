@@ -2,6 +2,7 @@
   // Use IntelliSense to learn about possible attributes.
   // Hover to view descriptions of existing attributes.
   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  // "args": ["-w", "3c8358a5-ab05-4c65-8c0e-f942b4ed2251", "-j", "667bef4a-26c7-4674-9861-7087d997a7e2"],
   "version": "0.2.0",
   "configurations": [
     {
@@ -15,7 +16,6 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Program",
-      "args": ["-w", "3c8358a5-ab05-4c65-8c0e-f942b4ed2251", "-j", "667bef4a-26c7-4674-9861-7087d997a7e2"],
       "runtimeArgs": ["--nolazy", "-r", "ts-node/register"],
       "skipFiles": ["<node_internals>/**"],
       "program": "${workspaceFolder}\\startup.ts",

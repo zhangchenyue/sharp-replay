@@ -39,12 +39,13 @@ export async function fetchWellByIdAsync(wellId: string) {
   const wellBaseURL = await consul('Uri-Slb.Prism.Core.Service.Well-2');
   const tenantId = await consul('Delfi-Test-Tenant-Id');
   const token = await getTokenAsync();
-  const wellURL = `${wellBaseURL}${wellId}?slb-data-partition-id=${tenantId}`;
+  const wellURL = `${wellBaseURL}${wellId}`;
 
   try {
     const { data } = await axios.get(`${wellURL}`, {
       headers: {
         Authorization: `Bearer ${token}`,
+        'slb-data-partition-id': tenantId,
       },
     });
     return { ...data };
@@ -57,11 +58,12 @@ export async function deleteWellAsync(wellId: string = '') {
   const wellBaseURL = await consul('Uri-Slb.Prism.Core.Service.Well-2');
   const tenantId = await consul('Delfi-Test-Tenant-Id');
   const token = await getTokenAsync();
-  const wellURL = `${wellBaseURL}${wellId}?slb-data-partition-id=${tenantId}`;
+  const wellURL = `${wellBaseURL}${wellId}`;
   try {
     return await axios.delete(`${wellURL}`, {
       headers: {
         Authorization: `Bearer ${token}`,
+        'slb-data-partition-id': tenantId,
       },
     });
   } catch (error) {
