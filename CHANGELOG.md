@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.0.43](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.42...v-0.0.43) (2021-03-02)
+
+
+### Features
+
+* **app:** upgrade to sauth v2 token ([a20e598](https://github.com/zhangchenyue/sharp-replay/commit/a20e5983d84574d423f86cea9d80c0d6272def84))
+
 ### [0.0.42](https://github.com/zhangchenyue/sharp-replay/compare/v-0.0.41...v-0.0.42) (2021-01-27)
 
 
